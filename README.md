@@ -1,1 +1,56 @@
-"# Leetcode" 
+# 每日LeetCode解題紀錄
+## 題目連結:[1823. Find the Winner of the Circular Game](https://leetcode.com/problems/find-the-winner-of-the-circular-game/submissions/1313454097/?envType=daily-question&envId=2024-07-08)
+## 題目說明
+- There are n friends that are playing a game. The friends are sitting in a circle and are numbered from 1 to n in clockwise order. More formally, moving clockwise from the ith friend brings you to the (i+1)th friend for 1 <= i < n, and moving clockwise from the nth friend brings you to the 1st friend.
+- The rules of the game are as follows:
+    1. Start at the 1st friend.
+    2. Count the next k friends in the clockwise direction including the friend you started at. The counting wraps around the circle and may count some friends more than once.
+    3. The last friend you counted leaves the circle and loses the game.
+    4. If there is still more than one friend in the circle, go back to step 2 starting from the friend immediately clockwise of the friend who just lost and repeat.
+    5. Else, the last friend in the circle wins the game.
+- Given the number of friends, n, and an integer k, return the winner of the game.
+
+![image](https://hackmd.io/_uploads/Bk95NCuPR.png)
+- Input: n = 5, k = 2，Output: 3
+- Explanation: Here are the steps of the game:
+1) Start at friend 1.
+2) Count 2 friends clockwise, which are friends 1 and 2.
+3) Friend 2 leaves the circle. Next start is friend 3.
+4) Count 2 friends clockwise, which are friends 3 and 4.
+5) Friend 4 leaves the circle. Next start is friend 5.
+6) Count 2 friends clockwise, which are friends 5 and 1.
+7) Friend 1 leaves the circle. Next start is friend 3.
+8) Count 2 friends clockwise, which are friends 3 and 5.
+9) Friend 5 leaves the circle. Only friend 3 is left, so they are the winner.
+- 出處:[1823. Find the Winner of the Circular Game](https://leetcode.com/problems/find-the-winner-of-the-circular-game/submissions/1313454097/?envType=daily-question&envId=2024-07-08)
+## 解題說明
+- 此題其實就是在解決[約瑟夫問題](https://en.wikipedia.org/wiki/Josephus_problem)，要求你回傳最後一個存活下來的人(編號)是誰。
+- 因此我嘗試用queue來解決此問題。
+## 程式碼
+```
+class Solution {
+public:
+    int findTheWinner(int n, int k) {
+        queue<int> qu;
+        int i=1;
+        while(i <= n) // 建立圓環
+        {
+            qu.push(i);
+            i++;
+        }
+        while(qu.size() != 1)
+        {
+            int count = 1;
+            while(count < k)
+            {
+                int temp = qu.front(); // 先將第一個值取出來
+                qu.push(temp); // 再將此值放入queue中
+                qu.pop(); // 將queue中最上面的值刪除
+                count++;
+            }
+            qu.pop(); // 刪除下一個值
+        }
+        return qu.front();
+    }
+};
+```
